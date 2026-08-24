@@ -1,0 +1,3246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Expense Tracker</title>
+
+    <!-- =========================
+         SHEETJS EXCEL LIBRARY
+    ========================= -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+    <!-- =========================
+         CHART.JS
+    ========================= -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <style>
+
+        /* =========================
+           GLOBAL
+        ========================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                    "Segoe UI",
+                    Arial,
+                    sans-serif;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #eef5ff,
+                            #f8fafc
+                    );
+
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #2563eb,
+                            #3b82f6,
+                            #06b6d4
+                    );
+
+            color: white;
+
+            padding: 24px 5%;
+
+            display: flex;
+
+            justify-content:
+                    space-between;
+
+            align-items:
+                    center;
+
+            box-shadow:
+                    0 5px 20px
+                    rgba(37, 99, 235, 0.25);
+
+            position:
+                    sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+        }
+
+
+        .header-left {
+
+            display: flex;
+
+            align-items:
+                    center;
+
+            gap: 15px;
+
+        }
+
+
+        .logo {
+
+            width: 55px;
+
+            height: 55px;
+
+            background:
+                    rgba(255,255,255,0.2);
+
+            border-radius:
+                    15px;
+
+            display:
+                    flex;
+
+            justify-content:
+                    center;
+
+            align-items:
+                    center;
+
+            font-size: 30px;
+
+            backdrop-filter:
+                    blur(10px);
+
+        }
+
+
+        .header h1 {
+
+            font-size:
+                    27px;
+
+            font-weight:
+                    700;
+
+        }
+
+
+        #welcomeUser {
+
+            margin-top:
+                    4px;
+
+            font-size:
+                    14px;
+
+            opacity:
+                    0.9;
+
+        }
+
+
+        .logout-btn {
+
+            background:
+                    rgba(255,255,255,0.15);
+
+            color:
+                    white;
+
+            border:
+                    1px solid
+                    rgba(255,255,255,0.35);
+
+            padding:
+                    11px 20px;
+
+            border-radius:
+                    10px;
+
+            cursor:
+                    pointer;
+
+            font-size:
+                    14px;
+
+            font-weight:
+                    600;
+
+            transition:
+                    0.25s;
+
+        }
+
+
+        .logout-btn:hover {
+
+            background:
+                    #ef4444;
+
+            border-color:
+                    #ef4444;
+
+            transform:
+                    translateY(-2px);
+
+        }
+
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        .container {
+
+            width:
+                    90%;
+
+            max-width:
+                    1250px;
+
+            margin:
+                    35px auto;
+
+        }
+
+
+        /* =========================
+           PAGE TITLE
+        ========================= */
+
+        .page-heading {
+
+            margin-bottom:
+                    25px;
+
+        }
+
+
+        .page-heading h2 {
+
+            font-size:
+                    25px;
+
+            color:
+                    #111827;
+
+        }
+
+
+        .page-heading p {
+
+            color:
+                    #6b7280;
+
+            margin-top:
+                    5px;
+
+        }
+
+
+        /* =========================
+           STAT CARDS
+        ========================= */
+
+        .stats {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap:
+                    20px;
+
+            margin-bottom:
+                    28px;
+
+        }
+
+
+        .stat-card {
+
+            background:
+                    rgba(255,255,255,0.95);
+
+            padding:
+                    22px;
+
+            border-radius:
+                    16px;
+
+            box-shadow:
+                    0 8px 25px
+                    rgba(15,23,42,0.08);
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    16px;
+
+            transition:
+                    0.25s;
+
+            border:
+                    1px solid
+                    rgba(226,232,240,0.8);
+
+        }
+
+
+        .stat-card:hover {
+
+            transform:
+                    translateY(-5px);
+
+            box-shadow:
+                    0 14px 30px
+                    rgba(15,23,42,0.12);
+
+        }
+
+
+        .stat-icon {
+
+            width:
+                    52px;
+
+            height:
+                    52px;
+
+            min-width:
+                    52px;
+
+            border-radius:
+                    14px;
+
+            display:
+                    flex;
+
+            justify-content:
+                    center;
+
+            align-items:
+                    center;
+
+            font-size:
+                    25px;
+
+        }
+
+
+        .icon-blue {
+
+            background:
+                    #dbeafe;
+
+        }
+
+
+        .icon-green {
+
+            background:
+                    #dcfce7;
+
+        }
+
+
+        .icon-purple {
+
+            background:
+                    #ede9fe;
+
+        }
+
+
+        .icon-red {
+
+            background:
+                    #fee2e2;
+
+        }
+
+
+        .stat-content h3 {
+
+            color:
+                    #64748b;
+
+            font-size:
+                    13px;
+
+            font-weight:
+                    600;
+
+            margin-bottom:
+                    5px;
+
+        }
+
+
+        .stat-content p {
+
+            color:
+                    #111827;
+
+            font-size:
+                    22px;
+
+            font-weight:
+                    750;
+
+        }
+
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .card {
+
+            background:
+                    rgba(255,255,255,0.96);
+
+            padding:
+                    26px;
+
+            border-radius:
+                    16px;
+
+            box-shadow:
+                    0 8px 25px
+                    rgba(15,23,42,0.07);
+
+            margin-bottom:
+                    25px;
+
+            border:
+                    1px solid
+                    #e5e7eb;
+
+        }
+
+
+        .card-header {
+
+            display:
+                    flex;
+
+            justify-content:
+                    space-between;
+
+            align-items:
+                    center;
+
+            margin-bottom:
+                    20px;
+
+        }
+
+
+        .card h2 {
+
+            color:
+                    #111827;
+
+            font-size:
+                    20px;
+
+        }
+
+
+        .card-subtitle {
+
+            color:
+                    #6b7280;
+
+            font-size:
+                    13px;
+
+            margin-top:
+                    4px;
+
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-row {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap:
+                    16px;
+
+        }
+
+
+        .input-group {
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            gap:
+                    7px;
+
+        }
+
+
+        .input-group label {
+
+            font-size:
+                    13px;
+
+            font-weight:
+                    600;
+
+            color:
+                    #475569;
+
+        }
+
+
+        input {
+
+            width:
+                    100%;
+
+            padding:
+                    13px 14px;
+
+            border:
+                    1px solid
+                    #d1d5db;
+
+            border-radius:
+                    10px;
+
+            font-size:
+                    14px;
+
+            background:
+                    #ffffff;
+
+            transition:
+                    0.2s;
+
+        }
+
+
+        input:focus {
+
+            outline:
+                    none;
+
+            border-color:
+                    #3b82f6;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(59,130,246,0.12);
+
+        }
+
+
+        .add-btn {
+
+            margin-top:
+                    20px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #22c55e,
+                            #16a34a
+                    );
+
+            color:
+                    white;
+
+            border:
+                    none;
+
+            padding:
+                    13px 25px;
+
+            border-radius:
+                    10px;
+
+            cursor:
+                    pointer;
+
+            font-size:
+                    15px;
+
+            font-weight:
+                    650;
+
+            transition:
+                    0.25s;
+
+            box-shadow:
+                    0 5px 15px
+                    rgba(34,197,94,0.25);
+
+        }
+
+
+        .add-btn:hover {
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    0 8px 20px
+                    rgba(34,197,94,0.35);
+
+        }
+
+
+        /* =========================
+           CHARTS
+        ========================= */
+
+        .charts-container {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap:
+                    25px;
+
+            margin-bottom:
+                    25px;
+
+        }
+
+
+        .chart-card {
+
+            background:
+                    rgba(255,255,255,0.96);
+
+            padding:
+                    26px;
+
+            border-radius:
+                    16px;
+
+            box-shadow:
+                    0 8px 25px
+                    rgba(15,23,42,0.07);
+
+            border:
+                    1px solid
+                    #e5e7eb;
+
+        }
+
+
+        .chart-header {
+
+            margin-bottom:
+                    20px;
+
+        }
+
+
+        .chart-header h2 {
+
+            font-size:
+                    19px;
+
+            color:
+                    #111827;
+
+        }
+
+
+        .chart-header p {
+
+            color:
+                    #64748b;
+
+            font-size:
+                    13px;
+
+            margin-top:
+                    4px;
+
+        }
+
+
+        .chart-wrapper {
+
+            position:
+                    relative;
+
+            height:
+                    340px;
+
+            width:
+                    100%;
+
+        }
+
+
+        .chart-wrapper canvas {
+
+            width:
+                    100% !important;
+
+            height:
+                    100% !important;
+
+        }
+
+
+        /* =========================
+           REPORT BUTTONS
+        ========================= */
+
+        .report-section {
+
+            display:
+                    flex;
+
+            justify-content:
+                    flex-end;
+
+            gap:
+                    10px;
+
+            margin-bottom:
+                    20px;
+
+            flex-wrap:
+                    wrap;
+
+        }
+
+
+        .csv-btn,
+        .excel-btn {
+
+            color:
+                    white;
+
+            border:
+                    none;
+
+            padding:
+                    11px 18px;
+
+            border-radius:
+                    9px;
+
+            cursor:
+                    pointer;
+
+            font-size:
+                    14px;
+
+            font-weight:
+                    600;
+
+            transition:
+                    0.25s;
+
+        }
+
+
+        .csv-btn {
+
+            background:
+                    #0f766e;
+
+        }
+
+
+        .excel-btn {
+
+            background:
+                    #15803d;
+
+        }
+
+
+        .csv-btn:hover,
+        .excel-btn:hover {
+
+            transform:
+                    translateY(-2px);
+
+            filter:
+                    brightness(0.92);
+
+        }
+
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        .table-container {
+
+            overflow-x:
+                    auto;
+
+        }
+
+
+        table {
+
+            width:
+                    100%;
+
+            border-collapse:
+                    collapse;
+
+        }
+
+
+        th {
+
+            background:
+                    #f1f5f9;
+
+            color:
+                    #475569;
+
+            padding:
+                    14px;
+
+            text-align:
+                    left;
+
+            font-size:
+                    13px;
+
+            font-weight:
+                    700;
+
+            border-bottom:
+                    1px solid
+                    #e2e8f0;
+
+        }
+
+
+        td {
+
+            padding:
+                    14px;
+
+            border-bottom:
+                    1px solid
+                    #edf2f7;
+
+            font-size:
+                    14px;
+
+            color:
+                    #334155;
+
+        }
+
+
+        tbody tr {
+
+            transition:
+                    0.2s;
+
+        }
+
+
+        tbody tr:hover {
+
+            background:
+                    #f8fafc;
+
+        }
+
+
+        /* =========================
+           ACTION BUTTONS
+        ========================= */
+
+        .edit-btn,
+        .delete-btn {
+
+            border:
+                    none;
+
+            padding:
+                    7px 12px;
+
+            border-radius:
+                    7px;
+
+            cursor:
+                    pointer;
+
+            font-size:
+                    12px;
+
+            font-weight:
+                    600;
+
+            transition:
+                    0.2s;
+
+        }
+
+
+        .edit-btn {
+
+            background:
+                    #fef3c7;
+
+            color:
+                    #b45309;
+
+            margin-right:
+                    5px;
+
+        }
+
+
+        .edit-btn:hover {
+
+            background:
+                    #f59e0b;
+
+            color:
+                    white;
+
+        }
+
+
+        .delete-btn {
+
+            background:
+                    #fee2e2;
+
+            color:
+                    #b91c1c;
+
+        }
+
+
+        .delete-btn:hover {
+
+            background:
+                    #ef4444;
+
+            color:
+                    white;
+
+        }
+
+
+        /* =========================
+           TOTAL
+        ========================= */
+
+        .total {
+
+            margin-top:
+                    20px;
+
+            padding-top:
+                    18px;
+
+            border-top:
+                    1px solid
+                    #e5e7eb;
+
+            text-align:
+                    right;
+
+            font-size:
+                    21px;
+
+            font-weight:
+                    750;
+
+            color:
+                    #111827;
+
+        }
+
+
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        #message {
+
+            margin-top:
+                    15px;
+
+            font-weight:
+                    600;
+
+            font-size:
+                    14px;
+
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
+
+            text-align:
+                    center;
+
+            color:
+                    #94a3b8;
+
+            font-size:
+                    13px;
+
+            padding:
+                    10px 0 30px;
+
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 1000px) {
+
+            .stats {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+            .charts-container {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .header {
+
+                padding:
+                        18px 20px;
+
+            }
+
+
+            .header h1 {
+
+                font-size:
+                        21px;
+
+            }
+
+
+            .logo {
+
+                width:
+                        45px;
+
+                height:
+                        45px;
+
+                font-size:
+                        23px;
+
+            }
+
+
+            .container {
+
+                width:
+                        94%;
+
+                margin:
+                        25px auto;
+
+            }
+
+
+            .form-row {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .card,
+            .chart-card {
+
+                padding:
+                        20px;
+
+            }
+
+
+            .report-section {
+
+                justify-content:
+                        center;
+
+            }
+
+
+            .chart-wrapper {
+
+                height:
+                        300px;
+
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .stats {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .header {
+
+                flex-direction:
+                        column;
+
+                align-items:
+                        flex-start;
+
+                gap:
+                        15px;
+
+            }
+
+
+            .logout-btn {
+
+                width:
+                        100%;
+
+            }
+
+
+            .stat-card {
+
+                padding:
+                        18px;
+
+            }
+
+
+            .report-section {
+
+                flex-direction:
+                        column;
+
+            }
+
+
+            .csv-btn,
+            .excel-btn {
+
+                width:
+                        100%;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<div class="header">
+
+    <div class="header-left">
+
+        <div class="logo">
+            💰
+        </div>
+
+        <div>
+
+            <h1>
+                Expense Tracker
+            </h1>
+
+            <p id="welcomeUser">
+                Loading user...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <button
+            class="logout-btn"
+            onclick="logout()">
+
+        🚪 Logout
+
+    </button>
+
+</div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="container">
+
+
+    <!-- =========================
+         PAGE HEADING
+    ========================= -->
+
+    <div class="page-heading">
+
+        <h2>
+            Dashboard
+        </h2>
+
+        <p>
+            Track your spending and manage your expenses easily.
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         STATISTICS
+    ========================= -->
+
+    <div class="stats">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-blue">
+                💰
+            </div>
+
+            <div class="stat-content">
+
+                <h3>
+                    TOTAL EXPENSES
+                </h3>
+
+                <p>
+                    ₹<span id="totalStat">0.00</span>
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-green">
+                📅
+            </div>
+
+            <div class="stat-content">
+
+                <h3>
+                    THIS MONTH
+                </h3>
+
+                <p>
+                    ₹<span id="monthStat">0.00</span>
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-purple">
+                📊
+            </div>
+
+            <div class="stat-content">
+
+                <h3>
+                    AVERAGE EXPENSE
+                </h3>
+
+                <p>
+                    ₹<span id="averageStat">0.00</span>
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-red">
+                🔥
+            </div>
+
+            <div class="stat-content">
+
+                <h3>
+                    HIGHEST EXPENSE
+                </h3>
+
+                <p>
+                    ₹<span id="highestStat">0.00</span>
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ADD EXPENSE
+    ========================= -->
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    ➕ Add Expense
+                </h2>
+
+                <p class="card-subtitle">
+                    Record a new expense to keep your finances organized.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form id="expenseForm">
+
+            <div class="form-row">
+
+
+                <div class="input-group">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <input
+                            type="text"
+                            id="description"
+                            placeholder="e.g. Lunch"
+                            required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="amount">
+                        Amount
+                    </label>
+
+                    <input
+                            type="number"
+                            id="amount"
+                            placeholder="e.g. 250"
+                            step="0.01"
+                            min="0"
+                            required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="category">
+                        Category
+                    </label>
+
+                    <input
+                            type="text"
+                            id="category"
+                            placeholder="Select or type a category"
+                            list="categorySuggestions"
+                            required
+                    >
+
+
+                    <datalist id="categorySuggestions">
+
+                        <option value="Food">
+
+                        <option value="Transport">
+
+                        <option value="Shopping">
+
+                        <option value="Bills">
+
+                        <option value="Entertainment">
+
+                        <option value="Health">
+
+                        <option value="Education">
+
+                        <option value="Travel">
+
+                        <option value="Rent">
+
+                        <option value="Groceries">
+
+                        <option value="Utilities">
+
+                        <option value="Other">
+
+                    </datalist>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="date">
+                        Date
+                    </label>
+
+                    <input
+                            type="date"
+                            id="date"
+                            required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                    type="submit"
+                    class="add-btn">
+
+                ➕ Add Expense
+
+            </button>
+
+        </form>
+
+
+        <div id="message"></div>
+
+    </div>
+
+
+    <!-- =========================
+         CHARTS
+    ========================= -->
+
+    <div class="charts-container">
+
+
+        <!-- BAR CHART -->
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h2>
+                    📊 Expenses by Category
+                </h2>
+
+                <p>
+                    Compare how much you spend in each category.
+                </p>
+
+            </div>
+
+
+            <div class="chart-wrapper">
+
+                <canvas id="barChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- PIE CHART -->
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h2>
+                    🥧 Expense Distribution
+                </h2>
+
+                <p>
+                    See the percentage of your spending by category.
+                </p>
+
+            </div>
+
+
+            <div class="chart-wrapper">
+
+                <canvas id="pieChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         EXPENSE TABLE
+    ========================= -->
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    💳 My Expenses
+                </h2>
+
+                <p class="card-subtitle">
+                    View and manage all your recorded expenses.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- REPORT BUTTONS -->
+
+        <div class="report-section">
+
+            <button
+                    class="csv-btn"
+                    onclick="downloadCSV()">
+
+                📥 Download CSV
+
+            </button>
+
+
+            <button
+                    class="excel-btn"
+                    onclick="downloadExcel()">
+
+                📊 Download Excel
+
+            </button>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Description</th>
+
+                    <th>Amount</th>
+
+                    <th>Category</th>
+
+                    <th>Date</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody id="expenseTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="total">
+
+            Total:
+            ₹<span id="totalAmount">0.00</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        Expense Tracker • Manage your money smarter 💙
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+    /* =========================
+       API
+    ========================= */
+
+    const API_URL =
+        "/api/expenses";
+
+
+    let editingExpenseId =
+        null;
+
+
+    let allExpenses =
+        [];
+
+
+    let barChart =
+        null;
+
+
+    let pieChart =
+        null;
+
+
+    /* =========================
+       LOAD CURRENT USER
+    ========================= */
+
+    async function loadCurrentUser() {
+
+        console.log(
+            "Checking logged-in user..."
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/users/current-user",
+                    {
+                        method:
+                            "GET",
+
+                        credentials:
+                            "include"
+                    }
+                );
+
+
+            const username =
+                await response.text();
+
+
+            if (
+                response.ok &&
+                username &&
+                username.trim() !== "" &&
+                username.trim() !==
+                "Not logged in"
+            ) {
+
+                document.getElementById(
+                    "welcomeUser"
+                ).textContent =
+                    "Welcome, " +
+                    username.trim() +
+                    " 👋";
+
+            } else {
+
+                window.location.href =
+                    "/login.html";
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Current user error:",
+                error
+            );
+
+
+            window.location.href =
+                "/login.html";
+
+        }
+
+    }
+
+
+    /* =========================
+       LOAD EXPENSES
+    ========================= */
+
+    async function loadExpenses() {
+
+        try {
+
+            const response =
+                await fetch(
+                    API_URL,
+                    {
+                        method:
+                            "GET",
+
+                        credentials:
+                            "include"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                if (
+                    response.status ===
+                    401 ||
+                    response.status ===
+                    403
+                ) {
+
+                    window.location.href =
+                        "/login.html";
+
+                    return;
+
+                }
+
+
+                throw new Error(
+                    "Failed to load expenses"
+                );
+
+            }
+
+
+            const expenses =
+                await response.json();
+
+
+            allExpenses =
+                expenses;
+
+
+            displayExpenses(
+                expenses
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Load expenses error:",
+                error
+            );
+
+
+            showMessage(
+                "❌ Cannot load expenses",
+                "red"
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       DISPLAY EXPENSES
+    ========================= */
+
+    function displayExpenses(
+        expenses
+    ) {
+
+        const tableBody =
+            document.getElementById(
+                "expenseTableBody"
+            );
+
+
+        tableBody.innerHTML =
+            "";
+
+
+        let total =
+            0;
+
+
+        let highest =
+            0;
+
+
+        let monthTotal =
+            0;
+
+
+        const currentDate =
+            new Date();
+
+
+        const currentMonth =
+            currentDate.getMonth();
+
+
+        const currentYear =
+            currentDate.getFullYear();
+
+
+        const categoryTotals =
+            {};
+
+
+        /* =========================
+           NO EXPENSES
+        ========================= */
+
+        if (
+            expenses.length ===
+            0
+        ) {
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        style="text-align:center;">
+
+                        No expenses found
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        /* =========================
+           EXPENSE LOOP
+        ========================= */
+
+        expenses.forEach(
+            function(expense) {
+
+                const amount =
+                    Number(
+                        expense.amount
+                    );
+
+
+                total +=
+                    amount;
+
+
+                if (
+                    amount >
+                    highest
+                ) {
+
+                    highest =
+                        amount;
+
+                }
+
+
+                const expenseDate =
+                    new Date(
+                        expense.date
+                    );
+
+
+                if (
+                    expenseDate.getMonth() ===
+                    currentMonth &&
+                    expenseDate.getFullYear() ===
+                    currentYear
+                ) {
+
+                    monthTotal +=
+                        amount;
+
+                }
+
+
+                const category =
+                    expense.category ||
+                    "Other";
+
+
+                if (
+                    categoryTotals[
+                        category
+                        ] === undefined
+                ) {
+
+                    categoryTotals[
+                        category
+                        ] = 0;
+
+                }
+
+
+                categoryTotals[
+                    category
+                    ] +=
+                    amount;
+
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${expense.id}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                    expense.description
+                )}
+                    </td>
+
+                    <td>
+                        ₹${amount.toFixed(2)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                    expense.category
+                )}
+                    </td>
+
+                    <td>
+                        ${expense.date}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="edit-btn"
+                            onclick="editExpense(
+                                ${expense.id},
+                                '${escapeQuotes(
+                    expense.description
+                )}',
+                                ${amount},
+                                '${escapeQuotes(
+                    expense.category
+                )}',
+                                '${expense.date}'
+                            )">
+
+                            Edit
+
+                        </button>
+
+
+                        <button
+                            class="delete-btn"
+                            onclick="deleteExpense(
+                                ${expense.id}
+                            )">
+
+                            Delete
+
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                tableBody.appendChild(
+                    row
+                );
+
+            }
+        );
+
+
+        /* =========================
+           AVERAGE
+        ========================= */
+
+        const average =
+            expenses.length >
+            0
+
+                ? total /
+                expenses.length
+
+                : 0;
+
+
+        /* =========================
+           UPDATE STATISTICS
+        ========================= */
+
+        document.getElementById(
+            "totalAmount"
+        ).textContent =
+            total.toFixed(2);
+
+
+        document.getElementById(
+            "totalStat"
+        ).textContent =
+            total.toFixed(2);
+
+
+        document.getElementById(
+            "monthStat"
+        ).textContent =
+            monthTotal.toFixed(2);
+
+
+        document.getElementById(
+            "averageStat"
+        ).textContent =
+            average.toFixed(2);
+
+
+        document.getElementById(
+            "highestStat"
+        ).textContent =
+            highest.toFixed(2);
+
+
+        /* =========================
+           UPDATE CHARTS
+        ========================= */
+
+        updateCharts(
+            categoryTotals
+        );
+
+    }
+
+
+    /* =========================
+       UPDATE CHARTS
+    ========================= */
+
+    function updateCharts(
+        categoryTotals
+    ) {
+
+        const categories =
+            Object.keys(
+                categoryTotals
+            );
+
+
+        const amounts =
+            Object.values(
+                categoryTotals
+            );
+
+
+        /* =========================
+           DESTROY OLD CHARTS
+        ========================= */
+
+        if (
+            barChart !== null
+        ) {
+
+            barChart.destroy();
+
+        }
+
+
+        if (
+            pieChart !== null
+        ) {
+
+            pieChart.destroy();
+
+        }
+
+
+        /* =========================
+           BAR CHART
+        ========================= */
+
+        const barCanvas =
+            document.getElementById(
+                "barChart"
+            );
+
+
+        barChart =
+            new Chart(
+                barCanvas,
+                {
+
+                    type:
+                        "bar",
+
+
+                    data: {
+
+                        labels:
+                        categories,
+
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Amount Spent",
+
+
+                                data:
+                                amounts,
+
+
+                                backgroundColor:
+                                    "rgba(59, 130, 246, 0.75)",
+
+
+                                borderColor:
+                                    "#2563eb",
+
+
+                                borderWidth:
+                                    1,
+
+
+                                borderRadius:
+                                    8,
+
+
+                                maxBarThickness:
+                                    55
+
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive:
+                            true,
+
+
+                        maintainAspectRatio:
+                            false,
+
+
+                        plugins: {
+
+                            legend: {
+
+                                display:
+                                    false
+
+                            },
+
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function(
+                                            context
+                                        ) {
+
+                                            return (
+                                                " ₹" +
+                                                Number(
+                                                    context.raw
+                                                ).toFixed(
+                                                    2
+                                                )
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        },
+
+
+                        scales: {
+
+                            x: {
+
+                                grid: {
+
+                                    display:
+                                        false
+
+                                }
+
+                            },
+
+
+                            y: {
+
+                                beginAtZero:
+                                    true,
+
+
+                                grid: {
+
+                                    color:
+                                        "#e5e7eb"
+
+                                },
+
+
+                                ticks: {
+
+                                    callback:
+                                        function(
+                                            value
+                                        ) {
+
+                                            return (
+                                                "₹" +
+                                                value
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+        /* =========================
+           PIE CHART
+        ========================= */
+
+        const pieCanvas =
+            document.getElementById(
+                "pieChart"
+            );
+
+
+        pieChart =
+            new Chart(
+                pieCanvas,
+                {
+
+                    type:
+                        "doughnut",
+
+
+                    data: {
+
+                        labels:
+                        categories,
+
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Expense Distribution",
+
+
+                                data:
+                                amounts,
+
+
+                                backgroundColor: [
+
+                                    "#3b82f6",
+
+                                    "#22c55e",
+
+                                    "#f59e0b",
+
+                                    "#ef4444",
+
+                                    "#8b5cf6",
+
+                                    "#06b6d4",
+
+                                    "#f97316",
+
+                                    "#64748b",
+
+                                    "#14b8a6",
+
+                                    "#a855f7",
+
+                                    "#eab308",
+
+                                    "#ec4899"
+
+                                ],
+
+
+                                borderWidth:
+                                    3,
+
+
+                                borderColor:
+                                    "#ffffff"
+
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive:
+                            true,
+
+
+                        maintainAspectRatio:
+                            false,
+
+
+                        cutout:
+                            "62%",
+
+
+                        plugins: {
+
+                            legend: {
+
+                                position:
+                                    "bottom",
+
+
+                                labels: {
+
+                                    padding:
+                                        15,
+
+                                    usePointStyle:
+                                        true
+
+                                }
+
+                            },
+
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function(
+                                            context
+                                        ) {
+
+                                            const value =
+                                                Number(
+                                                    context.raw
+                                                );
+
+
+                                            return (
+                                                context.label +
+                                                ": ₹" +
+                                                value.toFixed(
+                                                    2
+                                                )
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+    }
+
+
+    /* =========================
+       ADD / UPDATE EXPENSE
+    ========================= */
+
+    document
+        .getElementById(
+            "expenseForm"
+        )
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const expense = {
+
+                    description:
+                        document
+                            .getElementById(
+                                "description"
+                            )
+                            .value
+                            .trim(),
+
+
+                    amount:
+                        Number(
+                            document
+                                .getElementById(
+                                    "amount"
+                                )
+                                .value
+                        ),
+
+
+                    category:
+                        document
+                            .getElementById(
+                                "category"
+                            )
+                            .value
+                            .trim(),
+
+
+                    date:
+                    document
+                        .getElementById(
+                            "date"
+                        )
+                        .value
+
+                };
+
+
+                try {
+
+                    let response;
+
+
+                    if (
+                        editingExpenseId !==
+                        null
+                    ) {
+
+                        response =
+                            await fetch(
+                                `${API_URL}/${editingExpenseId}`,
+                                {
+
+                                    method:
+                                        "PUT",
+
+
+                                    headers: {
+
+                                        "Content-Type":
+                                            "application/json"
+
+                                    },
+
+
+                                    credentials:
+                                        "include",
+
+
+                                    body:
+                                        JSON.stringify(
+                                            expense
+                                        )
+
+                                }
+                            );
+
+                    } else {
+
+                        response =
+                            await fetch(
+                                API_URL,
+                                {
+
+                                    method:
+                                        "POST",
+
+
+                                    headers: {
+
+                                        "Content-Type":
+                                            "application/json"
+
+                                    },
+
+
+                                    credentials:
+                                        "include",
+
+
+                                    body:
+                                        JSON.stringify(
+                                            expense
+                                        )
+
+                                }
+                            );
+
+                    }
+
+
+                    if (
+                        response.ok
+                    ) {
+
+                        if (
+                            editingExpenseId !==
+                            null
+                        ) {
+
+                            showMessage(
+                                "✅ Expense updated successfully!",
+                                "green"
+                            );
+
+                        } else {
+
+                            showMessage(
+                                "✅ Expense added successfully!",
+                                "green"
+                            );
+
+                        }
+
+
+                        editingExpenseId =
+                            null;
+
+
+                        document
+                            .getElementById(
+                                "expenseForm"
+                            )
+                            .reset();
+
+
+                        document
+                            .querySelector(
+                                ".add-btn"
+                            )
+                            .textContent =
+                            "➕ Add Expense";
+
+
+                        loadExpenses();
+
+                    } else {
+
+                        showMessage(
+                            "❌ Failed to save expense",
+                            "red"
+                        );
+
+                    }
+
+
+                } catch (error) {
+
+                    console.error(
+                        error
+                    );
+
+
+                    showMessage(
+                        "❌ Cannot connect to server",
+                        "red"
+                    );
+
+                }
+
+            }
+        );
+
+
+    /* =========================
+       EDIT EXPENSE
+    ========================= */
+
+    function editExpense(
+        id,
+        description,
+        amount,
+        category,
+        date
+    ) {
+
+        editingExpenseId =
+            id;
+
+
+        document.getElementById(
+            "description"
+        ).value =
+            description;
+
+
+        document.getElementById(
+            "amount"
+        ).value =
+            amount;
+
+
+        document.getElementById(
+            "category"
+        ).value =
+            category;
+
+
+        document.getElementById(
+            "date"
+        ).value =
+            date;
+
+
+        document
+            .querySelector(
+                ".add-btn"
+            )
+            .textContent =
+            "✏️ Update Expense";
+
+
+        window.scrollTo({
+
+            top:
+                0,
+
+            behavior:
+                "smooth"
+
+        });
+
+    }
+
+
+    /* =========================
+       DELETE EXPENSE
+    ========================= */
+
+    async function deleteExpense(
+        id
+    ) {
+
+        if (
+            !confirm(
+                "Are you sure you want to delete this expense?"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/${id}`,
+                    {
+
+                        method:
+                            "DELETE",
+
+                        credentials:
+                            "include"
+
+                    }
+                );
+
+
+            if (
+                response.ok
+            ) {
+
+                showMessage(
+                    "✅ Expense deleted successfully!",
+                    "green"
+                );
+
+
+                loadExpenses();
+
+            } else {
+
+                showMessage(
+                    "❌ Failed to delete expense",
+                    "red"
+                );
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            showMessage(
+                "❌ Cannot connect to server",
+                "red"
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       CSV REPORT
+    ========================= */
+
+    function downloadCSV() {
+
+        if (
+            allExpenses.length ===
+            0
+        ) {
+
+            alert(
+                "No expenses available to download."
+            );
+
+            return;
+
+        }
+
+
+        let csv =
+            "ID,Description,Amount,Category,Date\n";
+
+
+        allExpenses.forEach(
+            function(expense) {
+
+                const id =
+                    expense.id;
+
+
+                const description =
+                    csvEscape(
+                        expense.description
+                    );
+
+
+                const amount =
+                    Number(
+                        expense.amount
+                    ).toFixed(2);
+
+
+                const category =
+                    csvEscape(
+                        expense.category
+                    );
+
+
+                const date =
+                    expense.date;
+
+
+                csv +=
+                    `${id},${description},${amount},${category},${date}\n`;
+
+            }
+        );
+
+
+        const blob =
+            new Blob(
+                [csv],
+                {
+                    type:
+                        "text/csv;charset=utf-8;"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            url;
+
+
+        link.download =
+            "expense-report.csv";
+
+
+        document
+            .body
+            .appendChild(
+                link
+            );
+
+
+        link.click();
+
+
+        document
+            .body
+            .removeChild(
+                link
+            );
+
+
+        URL.revokeObjectURL(
+            url
+        );
+
+
+        showMessage(
+            "✅ CSV report downloaded successfully!",
+            "green"
+        );
+
+    }
+
+
+    /* =========================
+       EXCEL REPORT
+    ========================= */
+
+    function downloadExcel() {
+
+        if (
+            allExpenses.length ===
+            0
+        ) {
+
+            alert(
+                "No expenses available to download."
+            );
+
+            return;
+
+        }
+
+
+        const excelData =
+            allExpenses.map(
+                function(expense) {
+
+                    return {
+
+                        ID:
+                        expense.id,
+
+
+                        Description:
+                        expense.description,
+
+
+                        Amount:
+                            Number(
+                                expense.amount
+                            ),
+
+
+                        Category:
+                        expense.category,
+
+
+                        Date:
+                        expense.date
+
+                    };
+
+                }
+            );
+
+
+        const worksheet =
+            XLSX.utils.json_to_sheet(
+                excelData
+            );
+
+
+        worksheet["!cols"] = [
+
+            {
+                wch:
+                    8
+            },
+
+            {
+                wch:
+                    30
+            },
+
+            {
+                wch:
+                    15
+            },
+
+            {
+                wch:
+                    20
+            },
+
+            {
+                wch:
+                    15
+            }
+
+        ];
+
+
+        const workbook =
+            XLSX.utils.book_new();
+
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            "Expenses"
+        );
+
+
+        XLSX.writeFile(
+            workbook,
+            "expense-report.xlsx"
+        );
+
+
+        showMessage(
+            "✅ Excel report downloaded successfully!",
+            "green"
+        );
+
+    }
+
+
+    /* =========================
+       CSV ESCAPE
+    ========================= */
+
+    function csvEscape(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        const text =
+            String(value);
+
+
+        if (
+            text.includes(",") ||
+            text.includes('"') ||
+            text.includes("\n")
+        ) {
+
+            return '"' +
+                text.replace(
+                    /"/g,
+                    '""'
+                ) +
+                '"';
+
+        }
+
+
+        return text;
+
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    async function logout() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/users/logout",
+                    {
+
+                        method:
+                            "POST",
+
+                        credentials:
+                            "include"
+
+                    }
+                );
+
+
+            if (
+                response.ok
+            ) {
+
+                window.location.href =
+                    "/login.html";
+
+            } else {
+
+                alert(
+                    "Logout failed"
+                );
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Logout error:",
+                error
+            );
+
+
+            window.location.href =
+                "/login.html";
+
+        }
+
+    }
+
+
+    /* =========================
+       SHOW MESSAGE
+    ========================= */
+
+    function showMessage(
+        text,
+        color
+    ) {
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        message.textContent =
+            text;
+
+
+        message.style.color =
+            color;
+
+
+        setTimeout(
+            function() {
+
+                message.textContent =
+                    "";
+
+            },
+            3000
+        );
+
+    }
+
+
+    /* =========================
+       ESCAPE QUOTES
+    ========================= */
+
+    function escapeQuotes(
+        value
+    ) {
+
+        return String(value)
+
+            .replace(
+                /\\/g,
+                "\\\\"
+            )
+
+            .replace(
+                /'/g,
+                "\\'"
+            );
+
+    }
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHtml(
+        value
+    ) {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.textContent =
+            value;
+
+
+        return div.innerHTML;
+
+    }
+
+
+    /* =========================
+       PAGE LOAD
+    ========================= */
+
+    loadCurrentUser();
+
+    loadExpenses();
+
+
+</script>
+
+</body>
+
+</html>
+```

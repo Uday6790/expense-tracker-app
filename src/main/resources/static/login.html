@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Expense Tracker</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            width: 350px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .register-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>💰 Expense Tracker</h1>
+
+    <form id="loginForm">
+
+        <input
+                type="text"
+                id="username"
+                placeholder="Username"
+                required
+        >
+
+        <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                required
+        >
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+    <div
+            id="message"
+            class="message">
+    </div>
+
+    <div class="register-link">
+
+        Don't have an account?
+
+        <a href="/register.html">
+            Create Account
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+
+    const API_URL = "/api/users/login";
+
+    document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const username =
+                document
+                    .getElementById("username")
+                    .value
+                    .trim();
+
+            const password =
+                document
+                    .getElementById("password")
+                    .value;
+
+            const message =
+                document
+                    .getElementById("message");
+
+            try {
+
+                const response =
+                    await fetch(API_URL, {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        credentials: "include",
+
+                        body: JSON.stringify({
+                            username: username,
+                            password: password
+                        })
+
+                    });
+
+                const result =
+                    await response.text();
+
+                if (result === "Login successful") {
+
+                    message.textContent =
+                        "✅ Login successful!";
+
+                    message.style.color =
+                        "green";
+
+                    setTimeout(function() {
+
+                        window.location.href =
+                            "/index.html";
+
+                    }, 500);
+
+                } else {
+
+                    message.textContent =
+                        "❌ " + result;
+
+                    message.style.color =
+                        "red";
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Login error:",
+                    error
+                );
+
+                message.textContent =
+                    "❌ Cannot connect to server";
+
+                message.style.color =
+                    "red";
+            }
+
+        });
+
+</script>
+
+</body>
+
+</html>

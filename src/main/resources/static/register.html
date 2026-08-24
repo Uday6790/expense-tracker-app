@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Register - Expense Tracker</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            width: 350px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>💰 Create Account</h1>
+
+    <form id="registerForm">
+
+        <input
+                type="text"
+                id="username"
+                placeholder="Username"
+                required
+        >
+
+        <input
+                type="email"
+                id="email"
+                placeholder="Email"
+                required
+        >
+
+        <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                required
+        >
+
+        <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm Password"
+                required
+        >
+
+        <button type="submit">
+            Register
+        </button>
+
+    </form>
+
+
+    <div
+            id="message"
+            class="message">
+    </div>
+
+
+    <div class="login-link">
+
+        Already have an account?
+
+        <a href="login.html">
+            Login
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const API_URL =
+        "http://localhost:8080/api/users/register";
+
+
+    document
+        .getElementById("registerForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const username =
+                    document
+                        .getElementById("username")
+                        .value
+                        .trim();
+
+
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
+
+
+                const confirmPassword =
+                    document
+                        .getElementById("confirmPassword")
+                        .value;
+
+
+                const message =
+                    document
+                        .getElementById("message");
+
+
+                // Check passwords
+
+                if (password !== confirmPassword) {
+
+                    message.textContent =
+                        "❌ Passwords do not match";
+
+                    message.style.color = "red";
+
+                    return;
+
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            API_URL,
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    username: username,
+
+                                    email: email,
+
+                                    password: password
+
+                                })
+                            }
+                        );
+
+
+                    const result =
+                        await response.text();
+
+
+                    if (response.ok) {
+
+                        message.textContent =
+                            "✅ Registration successful!";
+
+                        message.style.color =
+                            "green";
+
+
+                        document
+                            .getElementById(
+                                "registerForm"
+                            )
+                            .reset();
+
+
+                        setTimeout(
+                            function() {
+
+                                window.location.href =
+                                    "login.html";
+
+                            },
+                            1500
+                        );
+
+                    } else {
+
+                        message.textContent =
+                            "❌ " + result;
+
+                        message.style.color =
+                            "red";
+
+                    }
+
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    message.textContent =
+                        "❌ Cannot connect to server";
+
+                    message.style.color =
+                        "red";
+
+                }
+
+            }
+        );
+
+</script>
+
+</body>
+
+</html>
