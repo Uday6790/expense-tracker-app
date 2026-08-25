@@ -27,7 +27,7 @@
             width: 350px;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
 
         h1 {
@@ -65,6 +65,7 @@
             text-align: center;
             margin-top: 15px;
             font-weight: bold;
+            min-height: 20px;
         }
 
         .login-link {
@@ -75,6 +76,10 @@
         .login-link a {
             color: #3498db;
             text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
         }
 
     </style>
@@ -146,8 +151,21 @@
 
 <script>
 
-    const API_URL =
-        "http://localhost:8080/api/users/register";
+    /*
+     * IMPORTANT:
+     *
+     * DO NOT use:
+     * http://localhost:8080/api/users/register
+     *
+     * When deployed on Render, localhost means the user's
+     * own computer.
+     *
+     * Using a relative URL makes the request go to:
+     *
+     * https://expense-tracker-app-ckop.onrender.com/api/users/register
+     */
+
+    const API_URL = "/api/users/register";
 
 
     document
@@ -159,12 +177,16 @@
                 event.preventDefault();
 
 
+                // Get username
+
                 const username =
                     document
                         .getElementById("username")
                         .value
                         .trim();
 
+
+                // Get email
 
                 const email =
                     document
@@ -173,11 +195,15 @@
                         .trim();
 
 
+                // Get password
+
                 const password =
                     document
                         .getElementById("password")
                         .value;
 
+
+                // Get confirm password
 
                 const confirmPassword =
                     document
@@ -185,12 +211,16 @@
                         .value;
 
 
+                // Message area
+
                 const message =
                     document
                         .getElementById("message");
 
 
-                // Check passwords
+                /*
+                 * Check whether passwords match
+                 */
 
                 if (password !== confirmPassword) {
 
@@ -200,9 +230,12 @@
                     message.style.color = "red";
 
                     return;
-
                 }
 
+
+                /*
+                 * Send registration request
+                 */
 
                 try {
 
@@ -230,9 +263,17 @@
                         );
 
 
+                    /*
+                     * Read response from Spring Boot
+                     */
+
                     const result =
                         await response.text();
 
+
+                    /*
+                     * Registration successful
+                     */
 
                     if (response.ok) {
 
@@ -243,12 +284,20 @@
                             "green";
 
 
+                        /*
+                         * Clear form
+                         */
+
                         document
                             .getElementById(
                                 "registerForm"
                             )
                             .reset();
 
+
+                        /*
+                         * Redirect to login page
+                         */
 
                         setTimeout(
                             function() {
@@ -260,7 +309,14 @@
                             1500
                         );
 
-                    } else {
+                    }
+
+
+                    /*
+                     * Registration failed
+                     */
+
+                    else {
 
                         message.textContent =
                             "❌ " + result;
@@ -270,10 +326,19 @@
 
                     }
 
+                }
 
-                } catch (error) {
 
-                    console.error(error);
+                    /*
+                     * Connection error
+                     */
+
+                catch (error) {
+
+                    console.error(
+                        "Registration error:",
+                        error
+                    );
 
                     message.textContent =
                         "❌ Cannot connect to server";
