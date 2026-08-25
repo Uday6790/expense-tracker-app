@@ -36,6 +36,13 @@
             margin-bottom: 25px;
         }
 
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
         input {
             width: 100%;
             box-sizing: border-box;
@@ -44,6 +51,11 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3498db;
         }
 
         button {
@@ -93,35 +105,66 @@
 
     <h1>💰 Create Account</h1>
 
+
     <form id="registerForm">
+
+        <!-- Username -->
+
+        <label for="username">
+            Username
+        </label>
 
         <input
                 type="text"
                 id="username"
-                placeholder="Username"
+                placeholder="Enter username"
                 required
         >
+
+
+        <!-- Email -->
+
+        <label for="email">
+            Email
+        </label>
 
         <input
                 type="email"
                 id="email"
-                placeholder="Email"
+                placeholder="Enter email"
                 required
         >
+
+
+        <!-- Password -->
+
+        <label for="password">
+            Password
+        </label>
 
         <input
                 type="password"
                 id="password"
-                placeholder="Password"
+                placeholder="Enter password"
                 required
         >
+
+
+        <!-- Confirm Password -->
+
+        <label for="confirmPassword">
+            Confirm Password
+        </label>
 
         <input
                 type="password"
                 id="confirmPassword"
-                placeholder="Confirm Password"
+                placeholder="Confirm password"
                 required
         >
+
+
+        <!-- Register Button -->
 
         <button type="submit">
             Register
@@ -130,11 +173,15 @@
     </form>
 
 
+    <!-- Message -->
+
     <div
             id="message"
             class="message">
     </div>
 
+
+    <!-- Login Link -->
 
     <div class="login-link">
 
@@ -152,21 +199,37 @@
 <script>
 
     /*
+     * =====================================================
+     * API URL
+     * =====================================================
+     *
      * IMPORTANT:
      *
-     * DO NOT use:
+     * Do NOT use:
+     *
      * http://localhost:8080/api/users/register
      *
-     * When deployed on Render, localhost means the user's
-     * own computer.
+     * because that will try to connect to the user's
+     * computer after deployment.
      *
-     * Using a relative URL makes the request go to:
+     * This relative URL automatically uses the current
+     * Render domain.
      *
-     * https://expense-tracker-app-ckop.onrender.com/api/users/register
+     * Example:
+     *
+     * https://expense-tracker-app-ckop.onrender.com
+     * /api/users/register
+     *
      */
 
     const API_URL = "/api/users/register";
 
+
+    /*
+     * =====================================================
+     * REGISTER FORM
+     * =====================================================
+     */
 
     document
         .getElementById("registerForm")
@@ -174,10 +237,18 @@
             "submit",
             async function(event) {
 
+                /*
+                 * Stop normal form submission
+                 */
+
                 event.preventDefault();
 
 
-                // Get username
+                /*
+                 * =================================================
+                 * GET USERNAME
+                 * =================================================
+                 */
 
                 const username =
                     document
@@ -186,7 +257,11 @@
                         .trim();
 
 
-                // Get email
+                /*
+                 * =================================================
+                 * GET EMAIL
+                 * =================================================
+                 */
 
                 const email =
                     document
@@ -195,7 +270,11 @@
                         .trim();
 
 
-                // Get password
+                /*
+                 * =================================================
+                 * GET PASSWORD
+                 * =================================================
+                 */
 
                 const password =
                     document
@@ -203,7 +282,11 @@
                         .value;
 
 
-                // Get confirm password
+                /*
+                 * =================================================
+                 * GET CONFIRM PASSWORD
+                 * =================================================
+                 */
 
                 const confirmPassword =
                     document
@@ -211,7 +294,11 @@
                         .value;
 
 
-                // Message area
+                /*
+                 * =================================================
+                 * MESSAGE ELEMENT
+                 * =================================================
+                 */
 
                 const message =
                     document
@@ -219,7 +306,9 @@
 
 
                 /*
-                 * Check whether passwords match
+                 * =================================================
+                 * CHECK PASSWORDS
+                 * =================================================
                  */
 
                 if (password !== confirmPassword) {
@@ -234,7 +323,9 @@
 
 
                 /*
-                 * Send registration request
+                 * =================================================
+                 * SEND REQUEST TO SPRING BOOT
+                 * =================================================
                  */
 
                 try {
@@ -264,7 +355,9 @@
 
 
                     /*
-                     * Read response from Spring Boot
+                     * =================================================
+                     * GET SERVER RESPONSE
+                     * =================================================
                      */
 
                     const result =
@@ -272,7 +365,9 @@
 
 
                     /*
-                     * Registration successful
+                     * =================================================
+                     * SUCCESS
+                     * =================================================
                      */
 
                     if (response.ok) {
@@ -297,6 +392,7 @@
 
                         /*
                          * Redirect to login page
+                         * after 1.5 seconds
                          */
 
                         setTimeout(
@@ -313,7 +409,9 @@
 
 
                     /*
-                     * Registration failed
+                     * =================================================
+                     * SERVER ERROR
+                     * =================================================
                      */
 
                     else {
@@ -330,7 +428,9 @@
 
 
                     /*
-                     * Connection error
+                     * =================================================
+                     * CONNECTION ERROR
+                     * =================================================
                      */
 
                 catch (error) {
