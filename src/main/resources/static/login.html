@@ -27,13 +27,20 @@
             width: 350px;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
 
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
         }
 
         input {
@@ -44,6 +51,11 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3498db;
         }
 
         button {
@@ -65,6 +77,7 @@
             text-align: center;
             margin-top: 15px;
             font-weight: bold;
+            min-height: 20px;
         }
 
         .register-link {
@@ -77,9 +90,14 @@
             text-decoration: none;
         }
 
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
     </style>
 
 </head>
+
 
 <body>
 
@@ -87,7 +105,14 @@
 
     <h1>💰 Expense Tracker</h1>
 
+
     <form id="loginForm">
+
+        <!-- Username -->
+
+        <label for="username">
+            Username
+        </label>
 
         <input
                 type="text"
@@ -96,6 +121,13 @@
                 required
         >
 
+
+        <!-- Password -->
+
+        <label for="password">
+            Password
+        </label>
+
         <input
                 type="password"
                 id="password"
@@ -103,16 +135,25 @@
                 required
         >
 
+
+        <!-- Login Button -->
+
         <button type="submit">
             Login
         </button>
 
     </form>
 
+
+    <!-- Message -->
+
     <div
             id="message"
             class="message">
     </div>
+
+
+    <!-- Register Link -->
 
     <div class="register-link">
 
@@ -126,94 +167,219 @@
 
 </div>
 
+
 <script>
+
+    /*
+     * =====================================================
+     * API URL
+     * =====================================================
+     *
+     * IMPORTANT:
+     *
+     * Do NOT change this to localhost.
+     *
+     * This automatically uses your Render domain:
+     *
+     * https://expense-tracker-app-ckop.onrender.com
+     *
+     * Therefore the actual request becomes:
+     *
+     * https://expense-tracker-app-ckop.onrender.com/api/users/login
+     *
+     */
 
     const API_URL = "/api/users/login";
 
+
+    /*
+     * =====================================================
+     * LOGIN FORM
+     * =====================================================
+     */
+
     document
         .getElementById("loginForm")
-        .addEventListener("submit", async function(event) {
+        .addEventListener(
+            "submit",
+            async function(event) {
 
-            event.preventDefault();
+                /*
+                 * Stop normal form submission
+                 */
 
-            const username =
-                document
-                    .getElementById("username")
-                    .value
-                    .trim();
+                event.preventDefault();
 
-            const password =
-                document
-                    .getElementById("password")
-                    .value;
 
-            const message =
-                document
-                    .getElementById("message");
+                /*
+                 * Get username
+                 */
 
-            try {
+                const username =
+                    document
+                        .getElementById("username")
+                        .value
+                        .trim();
 
-                const response =
-                    await fetch(API_URL, {
 
-                        method: "POST",
+                /*
+                 * Get password
+                 */
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
 
-                        credentials: "include",
 
-                        body: JSON.stringify({
-                            username: username,
-                            password: password
-                        })
+                /*
+                 * Message element
+                 */
 
-                    });
+                const message =
+                    document
+                        .getElementById("message");
 
-                const result =
-                    await response.text();
 
-                if (result === "Login successful") {
+                /*
+                 * Show loading message
+                 */
+
+                message.textContent =
+                    "⏳ Logging in...";
+
+                message.style.color =
+                    "#3498db";
+
+
+                /*
+                 * =================================================
+                 * SEND LOGIN REQUEST
+                 * =================================================
+                 */
+
+                try {
+
+                    const response =
+                        await fetch(
+                            API_URL,
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                /*
+                                 * Keep cookies/session information
+                                 */
+
+                                credentials: "include",
+
+                                body: JSON.stringify({
+
+                                    username: username,
+
+                                    password: password
+
+                                })
+                            }
+                        );
+
+
+                    /*
+                     * Read Spring Boot response
+                     */
+
+                    const result =
+                        await response.text();
+
+
+                    console.log(
+                        "Login response:",
+                        response.status,
+                        result
+                    );
+
+
+                    /*
+                     * =================================================
+                     * LOGIN SUCCESS
+                     * =================================================
+                     */
+
+                    if (
+                        response.ok &&
+                        result.trim() === "Login successful"
+                    ) {
+
+                        message.textContent =
+                            "✅ Login successful!";
+
+                        message.style.color =
+                            "green";
+
+
+                        /*
+                         * Redirect to dashboard
+                         */
+
+                        setTimeout(
+                            function() {
+
+                                window.location.href =
+                                    "/index.html";
+
+                            },
+                            500
+                        );
+
+                    }
+
+
+                    /*
+                     * =================================================
+                     * LOGIN FAILED
+                     * =================================================
+                     */
+
+                    else {
+
+                        message.textContent =
+                            "❌ " + result;
+
+                        message.style.color =
+                            "red";
+
+                    }
+
+                }
+
+
+                    /*
+                     * =================================================
+                     * CONNECTION ERROR
+                     * =================================================
+                     */
+
+                catch (error) {
+
+                    console.error(
+                        "Login error:",
+                        error
+                    );
 
                     message.textContent =
-                        "✅ Login successful!";
-
-                    message.style.color =
-                        "green";
-
-                    setTimeout(function() {
-
-                        window.location.href =
-                            "/index.html";
-
-                    }, 500);
-
-                } else {
-
-                    message.textContent =
-                        "❌ " + result;
+                        "❌ Cannot connect to server";
 
                     message.style.color =
                         "red";
+
                 }
 
-            } catch (error) {
-
-                console.error(
-                    "Login error:",
-                    error
-                );
-
-                message.textContent =
-                    "❌ Cannot connect to server";
-
-                message.style.color =
-                    "red";
             }
-
-        });
+        );
 
 </script>
 
