@@ -1,52 +1,61 @@
-# 💰 Expense Tracker App
+# 💰 Smart Expense & Budget Tracker
 
-A full-stack **Expense Tracker application** that helps users record, manage, and monitor their daily expenses through a simple and user-friendly web interface.
+A full-stack **Smart Expense & Budget Tracker** web application developed using Java and Spring Boot. The application enables users to securely manage their personal expenses, organize spending by category, and monitor their financial activities through an interactive dashboard.
+
+🌐 **Live Application:** [https://expense-tracker.udaykiran.is-a.dev](https://expense-tracker.udaykiran.is-a.dev)
+
+📂 **GitHub Repository:** [Expense Tracker App](https://github.com/Uday6790/expense-tracker-app)
+
+---
 
 ## 🚀 Features
 
-* ➕ Add new expenses
-* ✏️ Edit existing expenses
-* 🗑️ Delete expenses
-* 📋 View all expenses
-* 💵 Track expense amounts
-* 📅 Store expense dates
-* 🏷️ Categorize expenses
-* 📊 Monitor spending
-* 🔐 User authentication and authorization
-* 📱 Responsive web interface
-* 🗄️ Database-backed expense management
-* 🌐 Ready for cloud deployment
+- 🔐 User Registration and Login
+- 👤 User Authentication and Session Management
+- ➕ Add New Expenses
+- ✏️ Edit Existing Expenses
+- 🗑️ Delete Expenses
+- 📋 View and Manage Expense Records
+- 💵 Track Expense Amounts
+- 📅 Record Expense Dates
+- 🏷️ Categorize Expenses
+- 📊 Interactive Expense Charts and Visualization
+- 📥 Export Expense Data
+- 📱 Responsive Web Interface
+- 🗄️ Database-Backed Expense Management
+- ☁️ Cloud Deployment
+
+---
 
 ## 🛠️ Technologies Used
 
 ### Backend
-
-* Java
-* Spring Boot
-* Spring Data JPA
-* Spring Security
-* Maven
-* REST APIs
+- Java
+- Spring Boot
+- Spring Data JPA
+- Spring Security
+- Maven
+- REST APIs
 
 ### Frontend
-
-* HTML5
-* CSS3
-* JavaScript
-* Bootstrap
+- HTML5
+- CSS3
+- JavaScript
+- Chart.js
 
 ### Database
-
-* PostgreSQL / MySQL
+- MySQL
+- PostgreSQL
 
 ### Testing
-
-* JUnit
-* Selenium
+- JUnit
+- Selenium
 
 ### Deployment
+- Render
+- Custom Domain: is-a.dev
 
-* Render
+---
 
 ## 📁 Project Structure
 
@@ -61,6 +70,10 @@ expense-tracker-app/
 │   │   │
 │   │   └── resources/
 │   │       ├── static/
+│   │       │   ├── login.html
+│   │       │   ├── register.html
+│   │       │   └── index.html
+│   │       │
 │   │       ├── templates/
 │   │       └── application.properties
 │   │
@@ -72,15 +85,29 @@ expense-tracker-app/
 └── .gitignore
 ```
 
+---
+
+## 🌐 Live Application
+
+Access the deployed application using the following link:
+
+### [🚀 Launch Expense Tracker](https://expense-tracker.udaykiran.is-a.dev/login.html)
+
+The application is hosted on Render and accessed through a custom is-a.dev domain.
+
+---
+
 ## ⚙️ Getting Started
+
+Follow these steps to run the project locally.
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/expense-tracker-app.git
+git clone https://github.com/Uday6790/expense-tracker-app.git
 ```
 
-### 2. Navigate to the Project
+### 2. Navigate to the Project Directory
 
 ```bash
 cd expense-tracker-app
@@ -88,20 +115,22 @@ cd expense-tracker-app
 
 ### 3. Configure the Database
 
-Create a database in PostgreSQL or MySQL.
+Create a database using MySQL or PostgreSQL.
 
-Update your `application.properties` with your database configuration:
+Configure your database connection in `application.properties`.
+
+Example PostgreSQL configuration:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/expense_tracker
-spring.datasource.username=YOUR_USERNAME
-spring.datasource.password=YOUR_PASSWORD
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 ```
 
-> **Note:** Do not upload your actual database password or other secrets to GitHub.
+**Security Note:** Never commit database credentials, passwords, or secret keys to GitHub.
 
 ### 4. Build the Project
 
@@ -121,52 +150,54 @@ The application will normally be available at:
 http://localhost:8080
 ```
 
-## 🔌 API Endpoints
+---
 
-Example REST API endpoints:
+## 🔌 REST API
 
-| Method | Endpoint             | Description       |
-| ------ | -------------------- | ----------------- |
-| GET    | `/api/expenses`      | Get all expenses  |
-| GET    | `/api/expenses/{id}` | Get an expense    |
-| POST   | `/api/expenses`      | Add an expense    |
-| PUT    | `/api/expenses/{id}` | Update an expense |
+The application provides REST APIs for user authentication and expense management.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/users/register` | Register a new user |
+| POST | `/api/users/login` | Authenticate a user |
+| GET | `/api/expenses` | Retrieve expenses |
+| POST | `/api/expenses` | Create a new expense |
+| PUT | `/api/expenses/{id}` | Update an expense |
 | DELETE | `/api/expenses/{id}` | Delete an expense |
+
+*Note: API access may require an authenticated user session.*
+
+---
 
 ## 🧾 Expense Data
 
-An expense can contain information such as:
+Each expense record can include:
 
-```text
-ID
-Title
-Amount
-Category
-Date
-Description
-```
+- Expense ID
+- Description
+- Amount
+- Category
+- Date
+
+---
 
 ## 🧪 Testing
 
-Run the automated tests using:
+Run automated tests using Maven:
 
 ```bash
 mvn test
 ```
 
-Selenium can be used for end-to-end testing of the application through the browser.
+JUnit is used for backend testing, while Selenium can be used for browser-based application testing.
 
-## 🌐 Live Application
-
-**Expense Tracker – Live Application**
-
-https://expense-tracker-app-ckop.onrender.com/
-
-> If the application is temporarily unavailable, the Render service may need a few moments to start.
+---
 
 ## 🔐 Security
 
-Sensitive configuration should be stored using environment variables rather than being committed to GitHub.
+The application incorporates user authentication and security practices to protect user access.
+
+Sensitive configuration should be managed through environment variables.
 
 Example:
 
@@ -176,28 +207,34 @@ spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
 spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
 ```
 
+---
+
 ## 📸 Screenshots
 
-Add screenshots of your application here:
+Screenshots of the application can be added to demonstrate its functionality.
 
 ```text
 screenshots/
 ├── dashboard.png
+├── login.png
+├── register.png
 ├── add-expense.png
-├── expense-list.png
-└── login.png
+└── expense-list.png
 ```
+
+---
 
 ## 🎯 Future Enhancements
 
-* 📊 Expense charts and analytics
-* 📈 Monthly and yearly spending reports
-* 🔎 Expense search and filtering
-* 📥 Export expenses to CSV/PDF
-* 👤 Multiple user accounts
-* 🔔 Budget notifications
-* ☁️ Improved cloud deployment
-* 📱 Progressive Web App support
+- 📊 Advanced Expense Analytics
+- 📈 Monthly and Yearly Spending Reports
+- 🔎 Expense Search and Filtering
+- 📥 PDF and CSV Export
+- 🔔 Budget Notifications
+- 📱 Progressive Web App Support
+- ☁️ Enhanced Cloud Deployment
+
+---
 
 ## 👨‍💻 Author
 
@@ -205,6 +242,12 @@ screenshots/
 
 MCA Student | Java Full Stack Developer | Software Developer
 
+- GitHub: [Uday6790](https://github.com/Uday6790)
+- Portfolio: [https://udaykiran.is-a.dev](https://udaykiran.is-a.dev)
+- Expense Tracker: [Live Application](https://expense-tracker.udaykiran.is-a.dev)
+
+---
+
 ## 📄 License
 
-This project is created for educational and portfolio purposes.
+This project is developed for educational, learning, and software development portfolio purposes.
